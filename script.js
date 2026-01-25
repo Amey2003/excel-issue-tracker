@@ -1,7 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Elements
+    const fileInput = document.getElementById('fileInput');
+    // const uploadBtn = document.getElementById('uploadBtn');
+    const dropZone = document.getElementById('dropZone');
     const dashboard = document.getElementById('dashboard');
     const emptyState = document.getElementById('empty-state');
+    const loadDemoBtn = document.getElementById('loadDemo');
     const toast = document.getElementById('toast');
 
     // State
@@ -13,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     // Configuration
+    const REFRESH_INTERVAL_MS = 60000; // 60 Seconds
     const REPO_OWNER = 'Amey2003';
     const REPO_NAME = 'excel-issue-tracker';
     const ISSUE_NUMBER = 1; // UPDATE THIS IF NEEDED
@@ -20,10 +25,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialization
     fetchIssueData();
 
+    if (loadDemoBtn) {
+        loadDemoBtn.addEventListener('click', loadDemoData);
+    }
+
     // Main Processing
     async function fetchIssueData() {
         // Show loading state
-
+        if (emptyState) {
+            emptyState.innerHTML = `
+                <div class="upload-zone" style="border:none;">
+                    <h2>Loading Data...</h2>
+                    <p>Fetching latest issues from GitHub...</p>
+                </div>
+            `;
+        }
 
         try {
             const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`);
@@ -84,7 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
+    // Deprecated File Handling (Kept loadDemoData for testing if needed, or can remove)
+    function loadDemoData() {
+        const demoData = generateMockData(50);
+        processData(demoData);
+        showDashboard();
+        showToast("Demo Data Loaded");
+    }
 
     function showDashboard() {
         emptyState.classList.add('hidden');
@@ -302,12 +324,12 @@ document.addEventListener('DOMContentLoaded', () => {
             datasets: [{
                 label: 'Active Issues (Found)',
                 data: lineData.length > 0 ? lineData : [0],
-                borderColor: '#2563eb',
+                borderColor: '#B24A58',
                 borderWidth: 3,
                 tension: 0.3,
                 fill: true,
-                backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                pointBackgroundColor: '#2563eb',
+                backgroundColor: 'rgba(178, 74, 88, 0.1)',
+                pointBackgroundColor: '#B24A58',
                 pointRadius: 5,
                 pointHoverRadius: 7
             }]
@@ -560,7 +582,17 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = html;
     }
 
+    // Chart Rendering
+    function setupChartDefaults() {
+        Chart.defaults.color = '#000000'; // Black
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+        Chart.defaults.font.size = 11;
+    }
 
+    // This function now only sets up defaults and provides helper for colors
+    function renderCharts() {
+        setupChartDefaults();
+    }
 
     function createChart(canvasId, type, data, options, plugins = []) {
         const c = document.getElementById(canvasId);
@@ -591,7 +623,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (canvasId === 'resolutionChart') resolutionChart = chart;
     }
 
+    function getSevColor(sev) {
+        switch (sev) {
+            case "Blocker": return '#B24A58';
+            case "Critical": return '#F599A2';
+            case "Major": return '#FBD0A5';
+            case "Normal": return '#FCFEA8';
+            case "Minor": return '#E4F3F3';
+            default: return '#94a3b8';
+        }
+    }
 
+    function generateMockData(count) {
+        const types = ["Functional", "UI", "Performance", "Security"];
+        const sevs = ["Blocker", "P0 - Critical", "P1 - Major", "P2 - Normal", "P3 - Minor"];
+        const states = ["Open", "Assigned", "In Dev", "RFT", "Resolved", "Closed"];
+        const devs = ["Alice", "Bob", "Charlie", "David", "Eve"];
 
-
+        const data = [];
+        for (let i = 0; i < count; i++) {
+            data.push({
+                "Bug Type": types[Math.floor(Math.random() * types.length)],
+                "Severity": sevs[Math.floor(Math.random() * sevs.length)],
+                "State": states[Math.floor(Math.random() * states.length)],
+                "Assigned To": devs[Math.floor(Math.random() * devs.length)]
+            });
+        }
+        return data;
+    }
 });
