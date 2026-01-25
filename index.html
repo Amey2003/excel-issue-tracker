@@ -12,8 +12,7 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- SheetJS -->
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="matrix_redesign.css">
@@ -39,8 +38,7 @@
                 <div class="kpi-card blocker-card">
                     <div class="kpi-header">
                         <h3>Blocker</h3>
-                        <img src="C:\Users\Amey.Phadkale\Desktop\Asset Tracking System 2.0\Final\Analytics Dashboard\Blocker.png"
-                            alt="Blocker" class="kpi-icon-img">
+                        <img src="asset/Blocker.png" alt="Blocker" class="kpi-icon-img">
                     </div>
                     <div class="kpi-value" id="blocker-count">0</div>
                 </div>
@@ -48,8 +46,7 @@
                 <div class="kpi-card critical-card">
                     <div class="kpi-header">
                         <h3>Critical</h3>
-                        <img src="C:\Users\Amey.Phadkale\Desktop\Asset Tracking System 2.0\Final\Analytics Dashboard\Critical.png"
-                            alt="Critical" class="kpi-icon-img">
+                        <img src="asset/Critical.png" alt="Critical" class="kpi-icon-img">
                     </div>
                     <div class="kpi-value" id="critical-count">0</div>
                 </div>
@@ -57,31 +54,28 @@
                 <div class="kpi-card p1-card">
                     <div class="kpi-header">
                         <h3>Major</h3>
-                        <img src="C:\Users\Amey.Phadkale\Desktop\Asset Tracking System 2.0\Final\Analytics Dashboard\Major.png"
-                            alt="Major" class="kpi-icon-img">
+                        <img src="asset/Major.png" alt="Major" class="kpi-icon-img">
                     </div>
                     <div class="kpi-value" id="p1-count">0</div>
-                    <!-- <div class="kpi-label">Major Issues</div> -->
+
                 </div>
 
                 <div class="kpi-card p2-card">
                     <div class="kpi-header">
                         <h3>Normal</h3>
-                        <img src="C:\Users\Amey.Phadkale\Desktop\Asset Tracking System 2.0\Final\Analytics Dashboard\Normal.png"
-                            alt="Normal" class="kpi-icon-img">
+                        <img src="asset/Normal.png" alt="Normal" class="kpi-icon-img">
                     </div>
                     <div class="kpi-value" id="p2-count">0</div>
-                    <!-- <div class="kpi-label">Normal Priority</div> -->
+
                 </div>
 
                 <div class="kpi-card p3-card">
                     <div class="kpi-header">
                         <h3>Minor</h3>
-                        <img src="C:\Users\Amey.Phadkale\Desktop\Asset Tracking System 2.0\Final\Analytics Dashboard\Minor.png"
-                            alt="Minor" class="kpi-icon-img">
+                        <img src="asset/Minor.png" alt="Minor" class="kpi-icon-img">
                     </div>
                     <div class="kpi-value" id="p3-count">0</div>
-                    <!-- <div class="kpi-label">Minor Issues</div> -->
+
                 </div>
             </div>
 
@@ -145,23 +139,15 @@
 
         <!-- Empty State / Upload Prompt -->
         <div id="empty-state" class="glass-panel empty-state">
-            <div class="upload-zone" id="dropZone">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
-                <h2>Upload Project Tracker</h2>
-                <p>Drag and drop your Excel file here, or click to browse</p>
-                <button class="btn primary-btn" onclick="document.getElementById('fileInput').click()">Select
-                    File</button>
+            <div class="upload-zone" style="border:none;">
+                <h2>Loading Data...</h2>
+                <p>Fetching latest issues from GitHub...</p>
             </div>
-            <!-- <p class="demo-link" id="loadDemo">Or load demo data</p> -->
+
         </div>
     </div>
 
-    <!-- Notification -->
-    <!--  <div id="toast" class="toast">Data Loaded Successfully</div> -->
+
 
     <!-- Notification -->
     <div id="toast" class="toast">Data Loaded Successfully</div>
