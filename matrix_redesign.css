@@ -1,0 +1,170 @@
+/* Matrix Image Style Redesign */
+.image-style {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0.3rem;
+    /* Gap between pills */
+    margin-top: 0.5rem;
+}
+
+.image-style th {
+    text-align: center;
+    padding: 0.4rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.image-style .th-start {
+    text-align: left;
+    color: var(--text-primary);
+}
+
+.image-style .th-tot {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* Header Colors */
+.th-blocker {
+    color: #000000;
+}
+
+.th-critical {
+    color: #000000;
+}
+
+.th-major {
+    color: #000000;
+}
+
+.th-normal {
+    color: #000000;
+}
+
+.th-minor {
+    color: #000000;
+}
+
+/* Rows */
+.image-style td {
+    padding: 0;
+    vertical-align: middle;
+}
+
+.td-label {
+    font-weight: 500;
+    color: var(--text-primary);
+    padding-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Pills */
+.pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    min-width: 36px;
+}
+
+.pill-blocker {
+    background-color: var(--blocker-color);
+    color: white;
+}
+
+.pill-critical {
+    background-color: var(--critical-color);
+    color: var(--text-on-light);
+}
+
+.pill-major {
+    background-color: var(--major-color);
+    color: var(--text-on-light);
+}
+
+.pill-normal {
+    background-color: var(--normal-color);
+    color: var(--text-on-light);
+}
+
+.pill-minor {
+    background-color: var(--minor-color);
+    color: var(--text-on-light);
+}
+
+.pill-total,
+.pill-grand {
+    color: #000000;
+    border-radius: 6px;
+}
+
+/* Zero / Empty State */
+.zero {
+    color: #cbd5e1;
+    /* Light grey */
+    text-align: center;
+    display: block;
+    font-weight: 400;
+}
+
+.zero-bold {
+    color: #000000;
+    text-align: center;
+    display: block;
+    font-weight: 600;
+}
+
+.td-val,
+.td-tot,
+.td-val-total,
+.td-grand-total {
+    text-align: center;
+}
+
+/* Footer Row Styling */
+.tr-total td {
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.td-label-total {
+    font-weight: 700;
+    color: #000000;
+}
+
+.tot-val {
+    font-weight: 700;
+}
+
+.tot-blocker {
+    color: #000000;
+}
+
+.tot-critical {
+    color: #000000;
+}
+
+.tot-major {
+    color: #000000;
+}
+
+.tot-normal {
+    color: #000000;
+}
+
+.tot-minor {
+    color: #000000;
+}
+
+/* Consistency for Totals */
+.td-tot,
+.td-label-total,
+.td-val-total,
+.pill-grand,
+.tot-val,
+.zero-bold {
+    font-size: 1rem !important;
+}
