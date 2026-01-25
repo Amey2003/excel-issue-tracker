@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Elements
-    const fileInput = document.getElementById('fileInput');
-    // const uploadBtn = document.getElementById('uploadBtn');
-    const dropZone = document.getElementById('dropZone');
     const dashboard = document.getElementById('dashboard');
-    const emptyState = document.getElementById('empty-state');
-    const loadDemoBtn = document.getElementById('loadDemo');
+    const loadingState = document.getElementById('loading-state');
+    const loadingText = document.getElementById('loading-text');
     const toast = document.getElementById('toast');
+
+    // Constants
+    const REPO_OWNER = 'Amey2003';
+    const REPO_NAME = 'excel-issue-tracker';
+    const ISSUE_NUMBER = 1; // Default to Issue #1
 
     // State
     let globalIssues = [];
@@ -15,97 +17,63 @@ document.addEventListener('DOMContentLoaded', () => {
     let lineChart = null;
     let resolutionChart = null;
 
-    // Event Listeners
-    // uploadBtn removed
-
-    // File Input Listener (Triggered by Empty State button)
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) {
-            handleFile(e.target.files[0]);
-        }
-    });
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = 'var(--accent)';
-    });
-
-    dropZone.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '';
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.style.borderColor = '';
-        if (e.dataTransfer.files.length) {
-            handleFile(e.dataTransfer.files[0]);
-        }
-    });
-
-    if (loadDemoBtn) {
-        loadDemoBtn.addEventListener('click', loadDemoData);
-    }
-
+    // Initialize
+    fetchIssueData();
 
     // Main Processing
-    async function handleFile(file) {
-        // 1. Parsing Phase
-        let jsonData;
+    async function fetchIssueData() {
         try {
-            const data = await file.arrayBuffer();
-            // Using type: 'array' is the correct way to handle ArrayBuffers with SheetJS
-            const workbook = XLSX.read(data, { type: 'array' });
-
-            if (!workbook.SheetNames.length) {
-                alert("Workbook contains no sheets!");
-                return;
+            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`);
+            
+            if (!response.ok) {
+                if (response.status === 404) throw new Error('Issue not found. Check REPO_OWNER, REPO_NAME, and ISSUE_NUMBER.');
+                if (response.status === 403) throw new Error('Rate limit exceeded or access denied.');
+                throw new Error(`GitHub API Error: ${response.statusText}`);
             }
 
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-            if (jsonData.length === 0) {
-                alert("Excel sheet is empty!");
-                return;
+            const data = await response.json();
+            
+            if (!data.body) {
+                throw new Error('Issue has no body content.');
             }
-        } catch (error) {
-            console.error("Parsing Error:", error);
-            alert("Failed to parse Excel file. Please ensure it is a valid .xlsx or .csv file.");
-            return;
-        }
 
-        // 2. Rendering Phase
-        try {
-            processData(jsonData);
+            // Parse JSON from Issue Body
+            let parsedData;
+            try {
+                // Remove code block markers if present (```json ... ```)
+                const cleanBody = data.body.replace(/```json/g, '').replace(/```/g, '').trim();
+                parsedData = JSON.parse(cleanBody);
+                
+                if (!parsedData.issues || !Array.isArray(parsedData.issues)) {
+                     throw new Error('JSON does not contain an "issues" array.');
+                }
+
+            } catch (e) {
+                console.error("JSON Parse Error:", e);
+                throw new Error('Failed to parse JSON from Issue body. Ensure format is correct.');
+            }
+
+            processData(parsedData.issues);
             showDashboard();
-            showToast("Data Loaded Successfully");
-        } catch (error) {
-            console.error("Rendering Error:", error);
-            // If the dashboard is visible, it means partial success, so maybe just log or warn gently
-            if (!dashboard.classList.contains('hidden')) {
-                console.warn("Dashboard rendered with some issues.");
-            } else {
-                alert("Error displaying dashboard: " + (error.message || error));
-            }
-        }
-    }
+            if (toast) showToast(`Data loaded from Issue #${ISSUE_NUMBER}`);
 
-    function loadDemoData() {
-        const demoData = generateMockData(50);
-        processData(demoData);
-        showDashboard();
-        showToast("Demo Data Loaded");
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            if (loadingText) {
+                loadingText.innerText = `Error: ${error.message}`;
+                loadingText.style.color = '#ef4444';
+            }
+            alert(`Failed to load data: ${error.message}`);
+        }
     }
 
     function showDashboard() {
-        emptyState.classList.add('hidden');
+        if (loadingState) loadingState.classList.add('hidden');
         dashboard.classList.remove('hidden');
     }
 
     function showToast(msg) {
+        if (!toast) return;
         toast.textContent = msg;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
