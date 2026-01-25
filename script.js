@@ -63,7 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`);
+            const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`, {
+                cache: 'no-store'
+            });
 
             if (!response.ok) {
                 if (response.status === 404) throw new Error("Issue not found. Check REPO settings.");
@@ -107,13 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
             showDashboard();
             processData(mappedData);
             showDashboard();
+
+            const timestamp = new Date().toLocaleTimeString();
             if (isManual) {
-                showToast("Data Refreshed Successfully");
+                showToast(`Data Refreshed: ${timestamp}`);
             } else if (!dashboard.classList.contains('hidden')) {
-                // Silent or console log for auto
-                console.log("Auto-refresh completed at " + new Date().toLocaleTimeString());
+                showToast(`Auto-Refreshed: ${timestamp}`);
             } else {
-                showToast("Data Loaded from GitHub");
+                showToast(`Data Loaded: ${timestamp}`);
             }
 
         } catch (error) {
