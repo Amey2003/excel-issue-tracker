@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZone = document.getElementById('dropZone');
     const dashboard = document.getElementById('dashboard');
     const emptyState = document.getElementById('empty-state');
-    const loadDemoBtn = document.getElementById('loadDemo');
     const toast = document.getElementById('toast');
+    const loadDemoBtn = document.getElementById('loadDemo'); // Kept if user wants it
+    const refreshBtn = document.getElementById('refreshBtn');
 
     // State
     let globalIssues = [];
@@ -24,15 +25,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialization
     fetchIssueData();
+    startAutoRefresh();
 
     if (loadDemoBtn) {
         loadDemoBtn.addEventListener('click', loadDemoData);
     }
 
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            fetchIssueData(true);
+        });
+    }
+
+    function startAutoRefresh() {
+        setInterval(() => {
+            fetchIssueData(false);
+        }, REFRESH_INTERVAL_MS);
+    }
+
     // Main Processing
-    async function fetchIssueData() {
-        // Show loading state
-        if (emptyState) {
+    async function fetchIssueData(isManual = false) {
+        // Show loading state ONLY on initial load (emptyState visible)
+        if (emptyState && !dashboard.classList.contains('hidden') && !isManual) {
+            // Silent update for auto-refresh
+        } else if (isManual) {
+            showToast("Refreshing data...");
+        }
+
+        // Initial Loading Screen
+        if (emptyState && dashboard.classList.contains('hidden')) {
             emptyState.innerHTML = `
                 <div class="upload-zone" style="border:none;">
                     <h2>Loading Data...</h2>
@@ -84,7 +105,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             processData(mappedData);
             showDashboard();
-            showToast("Data Loaded from GitHub");
+            processData(mappedData);
+            showDashboard();
+            if (isManual) {
+                showToast("Data Refreshed Successfully");
+            } else if (!dashboard.classList.contains('hidden')) {
+                // Silent or console log for auto
+                console.log("Auto-refresh completed at " + new Date().toLocaleTimeString());
+            } else {
+                showToast("Data Loaded from GitHub");
+            }
 
         } catch (error) {
             console.error(error);
