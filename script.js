@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Elements
+    const fileInput = document.getElementById('fileInput');
+    // const uploadBtn = document.getElementById('uploadBtn');
+    const dropZone = document.getElementById('dropZone');
     const dashboard = document.getElementById('dashboard');
-    const loadingState = document.getElementById('loading-state');
-    const loadingText = document.getElementById('loading-text');
+    const emptyState = document.getElementById('empty-state');
+    const loadDemoBtn = document.getElementById('loadDemo');
     const toast = document.getElementById('toast');
-
-    // Constants
-    const REPO_OWNER = 'Amey2003';
-    const REPO_NAME = 'excel-issue-tracker';
-    const ISSUE_NUMBER = 1; // Default to Issue #1
 
     // State
     let globalIssues = [];
@@ -17,63 +15,104 @@ document.addEventListener('DOMContentLoaded', () => {
     let lineChart = null;
     let resolutionChart = null;
 
-    // Initialize
+    // Event Listeners
+    // Configuration
+    const REPO_OWNER = 'Amey2003';
+    const REPO_NAME = 'excel-issue-tracker';
+    const ISSUE_NUMBER = 1; // UPDATE THIS IF NEEDED
+
+    // Initialization
     fetchIssueData();
+
+    if (loadDemoBtn) {
+        loadDemoBtn.addEventListener('click', loadDemoData);
+    }
 
     // Main Processing
     async function fetchIssueData() {
+        // Show loading state
+        if (emptyState) {
+            emptyState.innerHTML = `
+                <div class="upload-zone" style="border:none;">
+                    <h2>Loading Data...</h2>
+                    <p>Fetching latest issues from GitHub...</p>
+                </div>
+            `;
+        }
+
         try {
             const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${ISSUE_NUMBER}`);
-            
+
             if (!response.ok) {
-                if (response.status === 404) throw new Error('Issue not found. Check REPO_OWNER, REPO_NAME, and ISSUE_NUMBER.');
-                if (response.status === 403) throw new Error('Rate limit exceeded or access denied.');
-                throw new Error(`GitHub API Error: ${response.statusText}`);
+                if (response.status === 404) throw new Error("Issue not found. Check REPO settings.");
+                throw new Error(`GitHub API Error: ${response.status}`);
             }
 
-            const data = await response.json();
-            
-            if (!data.body) {
-                throw new Error('Issue has no body content.');
-            }
+            const issueData = await response.json();
 
-            // Parse JSON from Issue Body
-            let parsedData;
+            // Parse the JSON content from the body
+            // The body might be plain text, so we wrap it in a try/catch if strictly JSON is expected
+            let jsonData;
             try {
-                // Remove code block markers if present (```json ... ```)
-                const cleanBody = data.body.replace(/```json/g, '').replace(/```/g, '').trim();
-                parsedData = JSON.parse(cleanBody);
-                
-                if (!parsedData.issues || !Array.isArray(parsedData.issues)) {
-                     throw new Error('JSON does not contain an "issues" array.');
-                }
-
+                // Remove potential markdown code blocks if present (```json ... ```)
+                const cleanBody = issueData.body.replace(/```json/g, '').replace(/```/g, '').trim();
+                jsonData = JSON.parse(cleanBody);
             } catch (e) {
                 console.error("JSON Parse Error:", e);
-                throw new Error('Failed to parse JSON from Issue body. Ensure format is correct.');
+                console.log("Raw Body:", issueData.body);
+                throw new Error("Failed to parse JSON from Issue Body.");
             }
 
-            processData(parsedData.issues);
+            if (!Array.isArray(jsonData)) {
+                throw new Error("Data format error: Expected an array of issues.");
+            }
+
+            // Map the API data to the format processData expects
+            // "Sr no":"1","created_by":"Pranav.Patne","issue_title":"...","module_name":"Whole website","bug_type":"UI","severity":"Critical","state":"Fixed","assigned_to":"Pranav","bug_found":"20-01-2026 ","bug_fixed":"46044","fixed_by_method":"","fixed_by_name":"Jeevan","priority":"P0","product_comments":"P0 ","qa_comments":""
+
+            const mappedData = jsonData.map(item => ({
+                "Bug Type": item.bug_type,
+                "Severity": item.severity,
+                "State": item.state,
+                "Assigned To": item.assigned_to,
+                "Module": item.module_name,
+                "Bug Found Date": item.bug_found,
+                "Bug Fixed Date": item.bug_fixed,
+                "Priority": item.priority // In case severity mapping uses this
+            }));
+
+            processData(mappedData);
             showDashboard();
-            if (toast) showToast(`Data loaded from Issue #${ISSUE_NUMBER}`);
+            showToast("Data Loaded from GitHub");
 
         } catch (error) {
-            console.error("Fetch Error:", error);
-            if (loadingText) {
-                loadingText.innerText = `Error: ${error.message}`;
-                loadingText.style.color = '#ef4444';
+            console.error(error);
+            if (emptyState) {
+                emptyState.innerHTML = `
+                    <div class="upload-zone" style="border-color: red;">
+                        <h2 style="color: red;">Error Loading Data</h2>
+                        <p>${error.message}</p>
+                        <button class="btn primary-btn" onclick="location.reload()">Retry</button>
+                    </div>
+                `;
             }
-            alert(`Failed to load data: ${error.message}`);
         }
     }
 
+    // Deprecated File Handling (Kept loadDemoData for testing if needed, or can remove)
+    function loadDemoData() {
+        const demoData = generateMockData(50);
+        processData(demoData);
+        showDashboard();
+        showToast("Demo Data Loaded");
+    }
+
     function showDashboard() {
-        if (loadingState) loadingState.classList.add('hidden');
+        emptyState.classList.add('hidden');
         dashboard.classList.remove('hidden');
     }
 
     function showToast(msg) {
-        if (!toast) return;
         toast.textContent = msg;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
