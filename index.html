@@ -140,16 +140,9 @@
 
         <!-- Empty State / Upload Prompt -->
         <div id="empty-state" class="glass-panel empty-state">
-            <div class="upload-zone" id="dropZone">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
-                <h2>Upload Project Tracker</h2>
-                <p>Drag and drop your Excel file here, or click to browse</p>
-                <button class="btn primary-btn" onclick="document.getElementById('fileInput').click()">Select
-                    File</button>
+            <div class="upload-zone" style="border:none;">
+                <h2>Loading Data...</h2>
+                <p>Fetching latest issues from GitHub...</p>
             </div>
             <!-- <p class="demo-link" id="loadDemo">Or load demo data</p> -->
         </div>
