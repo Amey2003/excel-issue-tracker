@@ -1,13 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Elements
-    const fileInput = document.getElementById('fileInput');
-    // const uploadBtn = document.getElementById('uploadBtn');
-    const dropZone = document.getElementById('dropZone');
     const dashboard = document.getElementById('dashboard');
     const emptyState = document.getElementById('empty-state');
     const toast = document.getElementById('toast');
-    const loadDemoBtn = document.getElementById('loadDemo'); // Kept if user wants it
-    const refreshBtn = document.getElementById('refreshBtn');
 
     // State
     let globalIssues = [];
@@ -26,16 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialization
     fetchIssueData();
     startAutoRefresh();
-
-    if (loadDemoBtn) {
-        loadDemoBtn.addEventListener('click', loadDemoData);
-    }
-
-    if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
-            fetchIssueData(true);
-        });
-    }
 
     function startAutoRefresh() {
         setInterval(() => {
@@ -107,8 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             processData(mappedData);
             showDashboard();
-            processData(mappedData);
-            showDashboard();
+
 
             const timestamp = new Date().toLocaleTimeString();
             if (isManual) {
@@ -133,13 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Deprecated File Handling (Kept loadDemoData for testing if needed, or can remove)
-    function loadDemoData() {
-        const demoData = generateMockData(50);
-        processData(demoData);
-        showDashboard();
-        showToast("Demo Data Loaded");
-    }
+
+
 
     function showDashboard() {
         emptyState.classList.add('hidden');
@@ -165,19 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return "Unknown";
         };
 
-        const sevMap = (s) => {
-            s = String(s).toUpperCase();
-            if (s.includes("BLOCKER")) return "Blocker";
-            if (s.includes("P0") || s.includes("CRITICAL")) return "Critical";
-            if (s.includes("P1") || s.includes("MAJOR")) return "Major";
-            if (s.includes("P2") || s.includes("NORMAL")) return "Normal";
-            return "Minor";
-        };
+
 
         // Store globally with normalized severity
         globalIssues = data.map(row => ({
             type: norm(row, "Bug Type", "Type", "Issue Type"),
-            severity: sevMap(norm(row, "Severity", "Priority")),
+            severity: normalizeSeverity(norm(row, "Severity", "Priority")),
             state: norm(row, "State", "Status"),
             assignee: norm(row, "Assigned To", "Developer", "Assignee", "Dev Name"),
             module: norm(row, "Module", "Component", "Feature", "Area"),
@@ -218,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         renderDevMatrix(activeDevIssues);
         // Pass all issues initially for the Trend Chart
-        renderDevMatrix(activeDevIssues);
+
         // Populate filter for the Dev Matrix
         populateDateFilter(activeDevIssues, activeDevIssues); // Pass issues to extract dates from, and the source to filter
 
@@ -314,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTrendChart(issuesToRender, totalSheetIssues) {
         // Debug: Log unique states to help troubleshoot "No Data"
         const uniqueStates = [...new Set(issuesToRender.map(i => String(i.state).toUpperCase().trim()))];
-        console.log("Trend Chart Debug - Found States in Sheet:", uniqueStates);
+
 
         // Filter for specific ACTIVE states
         const activeTrendIssues = issuesToRender.filter(i => {
@@ -329,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return isActive;
         });
 
-        console.log("Trend Chart Debug - Active Issues Found: ", activeTrendIssues.length, " (Input Size: ", issuesToRender.length, ")");
+
 
         // Aggregation using Found Date
         const trendData = {};
@@ -422,13 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dataValues = severities.map(s => counts[s]);
 
         // Colors from style.css (or consistent with getSevColor)
-        const bgColors = [
-            '#B24A58', // Blocker
-            '#F599A2', // Critical
-            '#FBD0A5', // Major
-            '#FCFEA8', // Normal
-            '#E4F3F3'  // Minor
-        ];
+        const bgColors = severities.map(s => getSevColor(s));
 
         const data = {
             labels: severities,
@@ -556,14 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "Normal": "Normal",
             "Minor": "Minor"
         };
-        const sevMap = (s) => {
-            s = String(s).toUpperCase();
-            if (s.includes("BLOCKER")) return "Blocker";
-            if (s.includes("P0") || s.includes("CRITICAL")) return "Critical";
-            if (s.includes("P1") || s.includes("MAJOR")) return "Major";
-            if (s.includes("P2") || s.includes("NORMAL")) return "Normal";
-            return "Minor";
-        };
+
 
         const matrix = {};
         const rowTotals = {};
@@ -574,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         issues.forEach(i => {
-            const sev = sevMap(i.severity);
+            const sev = normalizeSeverity(i.severity);
             const rowVal = i[rowKey];
             let key = rowVal;
             if (rowKey === "state") {
@@ -667,21 +626,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function generateMockData(count) {
-        const types = ["Functional", "UI", "Performance", "Security"];
-        const sevs = ["Blocker", "P0 - Critical", "P1 - Major", "P2 - Normal", "P3 - Minor"];
-        const states = ["Open", "Assigned", "In Dev", "RFT", "Resolved", "Closed"];
-        const devs = ["Alice", "Bob", "Charlie", "David", "Eve"];
-
-        const data = [];
-        for (let i = 0; i < count; i++) {
-            data.push({
-                "Bug Type": types[Math.floor(Math.random() * types.length)],
-                "Severity": sevs[Math.floor(Math.random() * sevs.length)],
-                "State": states[Math.floor(Math.random() * states.length)],
-                "Assigned To": devs[Math.floor(Math.random() * devs.length)]
-            });
-        }
-        return data;
+    function normalizeSeverity(s) {
+        s = String(s).toUpperCase();
+        if (s.includes("BLOCKER")) return "Blocker";
+        if (s.includes("P0") || s.includes("CRITICAL")) return "Critical";
+        if (s.includes("P1") || s.includes("MAJOR")) return "Major";
+        if (s.includes("P2") || s.includes("NORMAL")) return "Normal";
+        return "Minor";
     }
+
+
 });
