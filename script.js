@@ -162,16 +162,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDashboard() {
-        // 1. Always update tiles with FULL counts
-        const counts = { Blocker: 0, Critical: 0, Major: 0, Normal: 0, Minor: 0 };
-        globalIssues.forEach(issue => {
-            if (issue.severity === "Blocker") counts.Blocker++;
-            if (issue.severity === "Critical") counts.Critical++;
-            if (issue.severity === "Major") counts.Major++;
-            if (issue.severity === "Normal") counts.Normal++;
-            if (issue.severity === "Minor") counts.Minor++;
-        });
-        updateTiles(counts);
+        // 1. Tile updates are now handled by applyTileFilter called below via initialization
+
+        // Update Header Stats
+        const totalIssuesCount = globalIssues.length;
+        const openIssuesCount = globalIssues.filter(i => {
+            const s = String(i.state).toUpperCase();
+            return !["FIXED", "RESOLVED", "CLOSED"].includes(s);
+        }).length;
+
+        const totalCountEl = document.getElementById('total-issues-count');
+        const openCountEl = document.getElementById('open-issues-count');
+
+        if (totalCountEl) totalCountEl.textContent = totalIssuesCount;
+        if (openCountEl) openCountEl.textContent = openIssuesCount;
+
+        // Setup filter clicks
+        const totalBtn = document.getElementById('btn-total-issues');
+        const openBtn = document.getElementById('btn-open-issues');
+
+        if (totalBtn && openBtn) {
+            totalBtn.onclick = () => applyTileFilter('total');
+            openBtn.onclick = () => applyTileFilter('open');
+        }
+
+        // Initialize with Total if not set, or maintain current
+        if (!window.currentTileFilter) {
+            applyTileFilter('total');
+        } else {
+            applyTileFilter(window.currentTileFilter);
+        }
 
         // KPI 1: Matrix (Now State vs Severity)
         const activeIssues = globalIssues.filter(i => {
@@ -621,7 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case "Critical": return '#F599A2';
             case "Major": return '#FBD0A5';
             case "Normal": return '#FCFEA8';
-            case "Minor": return '#E4F3F3';
+            case "Minor": return '#87CEEB';
             default: return '#94a3b8';
         }
     }
@@ -633,6 +653,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (s.includes("P1") || s.includes("MAJOR")) return "Major";
         if (s.includes("P2") || s.includes("NORMAL")) return "Normal";
         return "Minor";
+    }
+
+    // Filter Logic for Tiles
+    // Ensures we don't duplicate function logic
+    function applyTileFilter(filterType) {
+        window.currentTileFilter = filterType;
+        const totalBtn = document.getElementById('btn-total-issues');
+        const openBtn = document.getElementById('btn-open-issues');
+
+        // Visual Toggle
+        if (filterType === 'total') {
+            if (totalBtn) totalBtn.classList.add('active-filter');
+            if (openBtn) openBtn.classList.remove('active-filter');
+        } else {
+            if (totalBtn) totalBtn.classList.remove('active-filter');
+            if (openBtn) openBtn.classList.add('active-filter');
+        }
+
+        // Data Filtering
+        let targetIssues = [];
+        if (filterType === 'total') {
+            targetIssues = globalIssues;
+        } else {
+            // "Open" means not fixed/resolved/closed
+            targetIssues = globalIssues.filter(i => {
+                const s = String(i.state).toUpperCase();
+                return !["FIXED", "RESOLVED", "CLOSED"].includes(s);
+            });
+        }
+
+        // Count for Tiles
+        const counts = { Blocker: 0, Critical: 0, Major: 0, Normal: 0, Minor: 0 };
+        targetIssues.forEach(issue => {
+            if (issue.severity === "Blocker") counts.Blocker++;
+            if (issue.severity === "Critical") counts.Critical++;
+            if (issue.severity === "Major") counts.Major++;
+            if (issue.severity === "Normal") counts.Normal++;
+            if (issue.severity === "Minor") counts.Minor++;
+        });
+
+        updateTiles(counts);
     }
 
 

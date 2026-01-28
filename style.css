@@ -20,8 +20,8 @@
     /* Pastel Orange - Major */
     --normal-color: #FCFEA8;
     /* Pastel Yellow - Normal */
-    --minor-color: #E4F3F3;
-    /* Pastel Cyan - Minor */
+    --minor-color: #87CEEB;
+    /* Sky Blue - Minor */
 
     /* Text Colors for Contrast */
     --text-on-light: #0f172a;
@@ -49,6 +49,8 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
+    /* Prevent layout shift when scrollbar appears/disappears */
+    scrollbar-gutter: stable;
 }
 
 .app-container {
@@ -68,12 +70,15 @@ body {
 }
 
 /* Header */
+/* Header */
 header {
     margin-bottom: 1rem;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
+    /* Reduced padding */
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    /* Reduced gap */
 }
 
 .header-content {
@@ -85,7 +90,7 @@ header {
 h1 {
     font-weight: 800;
     /* Extra bold */
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: var(--text-primary);
     /* Solid color */
 }
@@ -94,12 +99,59 @@ h1 {
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    /* Slightly reduced */
 }
 
 .controls {
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
+    /* Reduced gap */
+}
+
+.stat-item {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.3));
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    /* Rounded corners adjustment */
+    padding: 0.25rem 0.5rem;
+    /* Tighter padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 120px;
+    /* Fixed Width Reduced */
+    height: 60px;
+    /* Fixed Height Reduced */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    /* Reduced from 2rem */
+    font-weight: 800;
+    color: var(--text-primary);
+    /* Dark text for better contrast */
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    /* Reduced from 0.75rem */
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn {
@@ -128,7 +180,8 @@ h1 {
 /* KPI Grid */
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    /* minmax(0, 1fr) prevents items from overflowing if content is too wide */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.8rem;
     margin-bottom: 1.5rem;
 }
@@ -143,6 +196,11 @@ h1 {
     cursor: default;
     position: relative;
     overflow: hidden;
+    /* Static sizing to prevent jitter */
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .kpi-card:hover {
@@ -249,12 +307,18 @@ h1 {
 
 .p3-card {
     border-top: 4px solid var(--minor-color);
-    background: linear-gradient(145deg, rgba(228, 243, 243, 0.3), rgba(255, 255, 255, 0.9));
+    /* Updated to match Sky Blue #87CEEB */
+    background: linear-gradient(145deg, rgba(135, 206, 235, 0.25), rgba(255, 255, 255, 0.9));
 }
 
 .p3-card .icon-box {
     background: var(--minor-color);
     color: var(--text-on-light);
+}
+
+.p3-card .kpi-icon-img {
+    /* Darken the icon to prevent it from merging with the tile color */
+    filter: brightness(0.6) contrast(1.3) hue-rotate(10deg);
 }
 
 .p3-card .kpi-value {
@@ -308,6 +372,9 @@ h1 {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    /* Faint visible separation line */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.5rem;
 }
 
 .chart-header h3 {
@@ -328,7 +395,8 @@ h1 {
     flex: 1;
     position: relative;
     width: 100%;
-    min-height: 160px;
+    height: 340px;
+    overflow: auto;
 }
 
 /* Empty State */
@@ -381,14 +449,17 @@ h1 {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: var(--minor-color);
-    color: white;
+    background: #1e293b;
+    /* Dark Slate Blue */
+    color: #ffffff;
     padding: 1rem 2rem;
     border-radius: 8px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     transform: translateY(200%);
     transition: transform 0.3s ease;
     z-index: 100;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toast.show {
@@ -563,4 +634,19 @@ h1 {
 
 .tot-minor {
     color: var(--minor-color);
+}
+
+/* Add active state for filters */
+.stat-item {
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.stat-item.active-filter {
+    border-color: #334155;
+    /* Dark Grey (Slate-700) */
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Standard shadow */
 }

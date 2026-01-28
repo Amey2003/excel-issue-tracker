@@ -15,8 +15,8 @@
     <!-- SheetJS -->
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="matrix_redesign.css">
+    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="matrix_redesign.css?v=16">
 </head>
 
 <body>
@@ -25,7 +25,16 @@
         <header class="glass-panel">
             <div class="header-content">
                 <h1>Issue Tracker</h1>
-                <div class="controls"></div>
+                <div class="controls">
+                    <div class="stat-item" id="btn-total-issues">
+                        <span class="stat-value" id="total-issues-count">0</span>
+                        <span class="stat-label">Total Issues</span>
+                    </div>
+                    <div class="stat-item" id="btn-open-issues">
+                        <span class="stat-value" id="open-issues-count">0</span>
+                        <span class="stat-label">Open Issues</span>
+                    </div>
+                </div>
             </div>
             <p class="subtitle">Real-time insights from daily trackers</p>
         </header>

@@ -1,61 +1,88 @@
-/* Matrix Image Style Redesign */
+/* Matrix Image Style Redesign - FINAL VISUAL STRUCTURE */
+
 .image-style {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0.3rem;
-    /* Gap between pills */
+    /* We MUST use collapse to allow continuous lines */
+    border-collapse: collapse !important;
     margin-top: 0.5rem;
+    color: #000;
 }
 
+/* --- THE LINES (Borders) --- */
+
+/* 1. Header Top & Bottom Separators */
+.image-style thead tr {
+    /* We apply to the row or cells. Applying to cells is safer for collapse behavior. */
+}
+
+/* Top Horizontal Line */
+/* Top Horizontal Line */
+.image-style thead th {
+    border-top: none;
+    border-bottom: none;
+}
+
+/* 2. Vertical Separator (Right of First Column) */
+/* Crosses Header, Body, and Footer */
+.image-style th:first-child,
+.image-style td:first-child {
+    border-right: 2px solid #94a3b8;
+}
+
+/* 3. Total Row Separator (Top of Footer) */
+.tr-total td {
+    border-top: 2px solid #94a3b8;
+}
+
+/* --- SPACING & LAYOUT --- */
+
+/* Header Cells */
 .image-style th {
     text-align: center;
-    padding: 0.4rem;
+    padding: 10px 5px;
+    /* Vertical padding creates height */
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    color: #000;
 }
 
-.image-style .th-start {
+/* First Column Alignment (State Labels) */
+.image-style .th-start,
+.image-style .td-label,
+.image-style .td-label-total {
     text-align: left;
-    color: var(--text-primary);
+    padding-left: 10px;
+    padding-right: 20px;
+    /* Space between text and the vertical line */
+    width: 1%;
+    /* Shrink to fit content, let others expand */
+    white-space: nowrap;
 }
 
-.image-style .th-tot {
-    color: var(--text-primary);
-    font-weight: 700;
-}
-
-/* Header Colors */
-.th-blocker {
-    color: #000000;
-}
-
-.th-critical {
-    color: #000000;
-}
-
-.th-major {
-    color: #000000;
-}
-
-.th-normal {
-    color: #000000;
-}
-
-.th-minor {
-    color: #000000;
-}
-
-/* Rows */
+/* Data Cells */
 .image-style td {
-    padding: 0;
+    padding: 8px 5px;
+    /* Mimic the "gap" between pills via padding */
     vertical-align: middle;
 }
 
-.td-label {
-    font-weight: 500;
-    color: var(--text-primary);
-    padding-right: 0.5rem;
-    font-size: 0.9rem;
+/* --- CONTENT STYLING --- */
+
+/* Text Colors */
+.td-label,
+.td-label-total {
+    font-weight: 700;
+    color: #000;
+}
+
+.th-blocker,
+.th-critical,
+.th-major,
+.th-normal,
+.th-minor,
+.th-tot,
+.th-tot-header {
+    color: #000;
 }
 
 /* Pills */
@@ -63,11 +90,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 28px;
+    height: 30px;
     border-radius: 6px;
     font-weight: 600;
-    font-size: 0.85rem;
-    min-width: 36px;
+    font-size: 0.9rem;
+    min-width: 40px;
+    margin: 0 auto;
 }
 
 .pill-blocker {
@@ -97,26 +125,25 @@
 
 .pill-total,
 .pill-grand {
-    color: #000000;
-    border-radius: 6px;
+    color: #000;
+    background: transparent;
 }
 
-/* Zero / Empty State */
+/* Zero State */
 .zero {
     color: #cbd5e1;
-    /* Light grey */
     text-align: center;
     display: block;
-    font-weight: 400;
 }
 
 .zero-bold {
-    color: #000000;
+    color: #000;
+    font-weight: 600;
     text-align: center;
     display: block;
-    font-weight: 600;
 }
 
+/* Alignment */
 .td-val,
 .td-tot,
 .td-val-total,
@@ -124,42 +151,20 @@
     text-align: center;
 }
 
-/* Footer Row Styling */
-.tr-total td {
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.td-label-total {
-    font-weight: 700;
-    color: #000000;
-}
-
 .tot-val {
     font-weight: 700;
+    color: #000;
 }
 
-.tot-blocker {
-    color: #000000;
-}
-
-.tot-critical {
-    color: #000000;
-}
-
-.tot-major {
-    color: #000000;
-}
-
-.tot-normal {
-    color: #000000;
-}
-
+.tot-blocker,
+.tot-critical,
+.tot-major,
+.tot-normal,
 .tot-minor {
-    color: #000000;
+    color: #000;
 }
 
-/* Consistency for Totals */
+/* Fonts */
 .td-tot,
 .td-label-total,
 .td-val-total,
