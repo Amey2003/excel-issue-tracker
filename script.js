@@ -168,7 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalIssuesCount = globalIssues.length;
         const openIssuesCount = globalIssues.filter(i => {
             const s = String(i.state).toUpperCase();
-            return !["FIXED", "RESOLVED", "CLOSED"].includes(s);
+            // Exclude only FIXED and RETIRED as requested
+            return !["FIXED", "RETIRED"].includes(s);
         }).length;
 
         const totalCountEl = document.getElementById('total-issues-count');
@@ -676,10 +677,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filterType === 'total') {
             targetIssues = globalIssues;
         } else {
-            // "Open" means not fixed/resolved/closed
+            // "Open" means not FIXED or RETIRED
             targetIssues = globalIssues.filter(i => {
                 const s = String(i.state).toUpperCase();
-                return !["FIXED", "RESOLVED", "CLOSED"].includes(s);
+                return !["FIXED", "RETIRED"].includes(s);
             });
         }
 

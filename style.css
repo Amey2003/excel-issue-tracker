@@ -248,14 +248,15 @@ h1 {
     color: var(--text-secondary);
 }
 
-/* KPI Card Tinted Backgrounds for Visibility */
+/* KPI Card Tinted Backgrounds for Visibility - Custom Darker Shades */
 .blocker-card {
-    border-top: 4px solid var(--blocker-color);
-    background: linear-gradient(145deg, rgba(178, 74, 88, 0.1), rgba(255, 255, 255, 0.9));
+    --card-dark-color: #881337;
+    border-top: 4px solid var(--card-dark-color);
+    background: linear-gradient(145deg, rgba(136, 19, 55, 0.25), rgba(255, 255, 255, 0.9));
 }
 
 .blocker-card .icon-box {
-    background: var(--blocker-color);
+    background: var(--card-dark-color);
     color: white;
 }
 
@@ -264,12 +265,13 @@ h1 {
 }
 
 .critical-card {
-    border-top: 4px solid var(--critical-color);
-    background: linear-gradient(145deg, rgba(245, 153, 162, 0.15), rgba(255, 255, 255, 0.9));
+    --card-dark-color: #EF4444;
+    border-top: 4px solid var(--card-dark-color);
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.25), rgba(255, 255, 255, 0.9));
 }
 
 .critical-card .icon-box {
-    background: var(--critical-color);
+    background: var(--card-dark-color);
     color: var(--text-on-light);
 }
 
@@ -278,12 +280,13 @@ h1 {
 }
 
 .p1-card {
-    border-top: 4px solid var(--major-color);
-    background: linear-gradient(145deg, rgba(251, 208, 165, 0.15), rgba(255, 255, 255, 0.9));
+    --card-dark-color: #F97316;
+    border-top: 4px solid var(--card-dark-color);
+    background: linear-gradient(145deg, rgba(249, 115, 22, 0.25), rgba(255, 255, 255, 0.9));
 }
 
 .p1-card .icon-box {
-    background: var(--major-color);
+    background: var(--card-dark-color);
     color: var(--text-on-light);
 }
 
@@ -292,12 +295,13 @@ h1 {
 }
 
 .p2-card {
-    border-top: 4px solid var(--normal-color);
-    background: linear-gradient(145deg, rgba(252, 254, 168, 0.2), rgba(255, 255, 255, 0.9));
+    --card-dark-color: #EAB308;
+    border-top: 4px solid var(--card-dark-color);
+    background: linear-gradient(145deg, rgba(234, 179, 8, 0.25), rgba(255, 255, 255, 0.9));
 }
 
 .p2-card .icon-box {
-    background: var(--normal-color);
+    background: var(--card-dark-color);
     color: var(--text-on-light);
 }
 
