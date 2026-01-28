@@ -298,7 +298,7 @@ h1 {
 
 .chart-card {
     padding: 1rem;
-    min-height: 280px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
 }
@@ -328,7 +328,7 @@ h1 {
     flex: 1;
     position: relative;
     width: 100%;
-    min-height: 220px;
+    min-height: 160px;
 }
 
 /* Empty State */
