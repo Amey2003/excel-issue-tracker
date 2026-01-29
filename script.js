@@ -216,7 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
         populateDateFilter(activeDevIssues, activeDevIssues); // Pass issues to extract dates from, and the source to filter
 
         // Trend Chart shows ALL Active Issues (unfiltered by the matrix dropdown)
-        renderTrendChart(globalIssues, globalIssues.length);
+        // Usage: renderTrendChart(issues, maxAxisValue)
+        renderTrendChart(globalIssues, openIssuesCount);
         renderResolutionChart(globalIssues);
     }
 
