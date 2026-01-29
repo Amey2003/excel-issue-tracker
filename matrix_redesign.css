@@ -5,7 +5,7 @@
     /* We MUST use collapse to allow continuous lines */
     border-collapse: collapse !important;
     margin-top: 0.5rem;
-    color: #000;
+    color: #0f172a;
 }
 
 /* --- THE LINES (Borders) --- */
@@ -72,9 +72,11 @@
 .td-label,
 .td-label-total {
     font-weight: 700;
-    color: #000;
+    color: #0f172a;
 }
 
+.image-style .th-start,
+.th-start,
 .th-blocker,
 .th-critical,
 .th-major,
@@ -153,7 +155,7 @@
 
 .tot-val {
     font-weight: 700;
-    color: #000;
+    color: #0f172a;
 }
 
 .tot-blocker,
@@ -161,7 +163,7 @@
 .tot-major,
 .tot-normal,
 .tot-minor {
-    color: #000;
+    color: #0f172a;
 }
 
 /* Fonts */
